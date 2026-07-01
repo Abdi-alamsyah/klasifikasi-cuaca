@@ -12,9 +12,11 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          lfs: true
 
       - name: Push to Hugging Face Space
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
+          git lfs install
           git push https://AbdiAlamsyah:$HF_TOKEN@huggingface.co/spaces/AbdiAlamsyah/klasifikasi-cuaca main:main --force
