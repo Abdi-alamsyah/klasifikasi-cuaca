@@ -11,12 +11,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0
           lfs: true
 
-      - name: Push to Hugging Face Space
+      - name: Push snapshot to Hugging Face Space
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
           git lfs install
-          git push https://AbdiAlamsyah:$HF_TOKEN@huggingface.co/spaces/AbdiAlamsyah/klasifikasi-cuaca main:main --force
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout --orphan hf-deploy
+          git add -A
+          git commit -m "Deploy ${{ github.sha }}"
+          git push https://AbdiAlamsyah:$HF_TOKEN@huggingface.co/spaces/AbdiAlamsyah/klasifikasi-cuaca hf-deploy:main --force
