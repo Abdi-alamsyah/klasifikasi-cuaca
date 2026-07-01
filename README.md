@@ -1,3 +1,12 @@
+---
+title: Klasifikasi Cuaca
+emoji: 🚀
+colorFrom: blue
+colorTo: pink
+sdk: docker
+pinned: false
+---
+
 # Sky Classifier: Training, FastAPI, dan React
 
 ## 1. Training
@@ -32,7 +41,7 @@ npm run dev
 Buka URL Vite yang muncul, biasanya `http://localhost:5173`.
 
 ## 4. Deployment
-- Frontend: deploy hasil `npm run build` ke static hosting HTTPS.
-- Backend: containerize memakai `backend/Dockerfile`, deploy sebagai satu service FastAPI.
-- Tetapkan `ALLOWED_ORIGINS` pada backend ke URL frontend produksi, misalnya `https://domain-anda.com`.
-- Akses kamera di browser produksi wajib melalui HTTPS.
+- Satu `Dockerfile` di root project membangun frontend (Vite build) dan backend (FastAPI) sekaligus dalam satu image, cocok untuk Hugging Face Space (SDK: Docker).
+- FastAPI menyajikan hasil build frontend sebagai static files, jadi membuka URL Space langsung menampilkan UI React (endpoint API tetap tersedia di `/health` dan `/predict`).
+- Akses kamera di browser produksi wajib melalui HTTPS (Hugging Face Space sudah HTTPS secara default).
+- Push ke `main` di GitHub otomatis ter-sync ke Hugging Face Space lewat GitHub Actions (`.github/workflows/sync-to-hf.yml`), memakai secret `HF_TOKEN`.

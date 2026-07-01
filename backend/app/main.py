@@ -1,7 +1,9 @@
 import os
+from pathlib import Path
 
 from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from app.inference import predict_image
 
@@ -46,14 +48,6 @@ ALLOWED_CONTENT_TYPES = {
     "image/png",
     "image/webp",
 }
-
-
-@app.get("/")
-def root():
-    return {
-        "message": "Sky Classifier API aktif",
-        "endpoint": "/predict",
-    }
 
 
 @app.get("/health")
@@ -103,3 +97,11 @@ async def predict(
             status_code=500,
             detail=f"Gagal melakukan prediksi: {str(error)}",
         )
+
+
+# frontend/dist ada di sebelah folder backend/, baik saat dijalankan
+# lokal (setelah `npm run build`) maupun di dalam image Docker.
+FRONTEND_DIST = Path(__file__).resolve().parent.parent.parent / "frontend" / "dist"
+
+if FRONTEND_DIST.exists():
+    app.mount("/", StaticFiles(directory=FRONTEND_DIST, html=True), name="frontend")
